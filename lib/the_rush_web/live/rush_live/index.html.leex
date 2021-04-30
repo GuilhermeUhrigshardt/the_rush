@@ -1,0 +1,107 @@
+<h2 class="center-align text-center blue-text text-darken-4">NFL Rush Stats!</h2>
+
+<%= if @live_action in [:new, :edit] do %>
+  <%= live_modal @socket, TheRushWeb.RushLive.FormComponent,
+    id: @rush.id || :new,
+    title: @page_title,
+    action: @live_action,
+    rush: @rush,
+    return_to: Routes.rush_index_path(@socket, :index) %>
+<% end %>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm">
+      <form phx-submit="player-search" phx-change="player-name">
+        <div class="input-group mb-3">
+          <div class="col-xs-4">
+            <input type="text" class="form-control" name="player" value="<%= @options.player %>"
+              placeholder="Player name"
+              autofocus autocomplete="off"
+              list="matches"
+              phx-debounce="500" />
+          </div>
+          <div class="input-group-append">
+            <button type="submit" class="btn btn-primary">
+              Search
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="col-sm">
+      <div class="float-right">
+      </div>
+    </div>
+  </div>
+</div>
+
+<datalist id="matches">
+  <%= for match <- @matches do %>
+    <option value="<%= match %>"><%= match %></option>
+  <% end %>
+</datalist>
+
+<div class="col s12 m8 offset-m1 xl7 offset-xl1">
+  <table class="striped responsive-table">
+    <thead class="blue-text text-darken-2">
+      <tr>
+        <th>Player</th>
+        <th>Team</th>
+        <th>Position</th>
+        <th>Attempts</th>
+        <th>Attempts per game</th>
+        <th>
+          <%= sort_action(@socket, "Total yards", :yards_total, @options) %>
+        </th>
+        <th>Yards average</th>
+        <th>Yards per game</th>
+        <th>
+          <%= sort_action(@socket, "Total rushing touchdowns", :touchdowns, @options) %>
+        </th>
+        <th>
+          <%= sort_action(@socket, "Longest rush", :longest, @options) %>
+        </th>
+        <th>Was longest touchdown</th>
+        <th>First downs</th>
+        <th>First downs percentage</th>
+        <th>Twenty plus yards</th>
+        <th>Forty plus yards</th>
+        <th>Fumbles</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="rushes" phx-update="<%= if @page_options.page == 1 do "replace" else "append" end %>">
+      <%= for rush <- @rushes do %>
+        <tr id="rush-<%= rush.id %>">
+          <td><%= rush.player %></td>
+          <td><%= rush.team %></td>
+          <td><%= rush.position %></td>
+          <td><%= rush.attempts %></td>
+          <td><%= rush.attempts_per_game %></td>
+          <td><%= rush.yards_total %></td>
+          <td><%= rush.yards_average %></td>
+          <td><%= rush.yards_per_game %></td>
+          <td><%= rush.touchdowns %></td>
+          <td><%= rush.longest %></td>
+          <td><%= if rush.was_longest_touchdown do "Yes" else "No" end %></td>
+          <td><%= rush.first_downs %></td>
+          <td><%= rush.first_downs_percentage %></td>
+          <td><%= rush.twenty_plus_yards %></td>
+          <td><%= rush.forty_plus_yards %></td>
+          <td><%= rush.fumbles %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<div id="footer" phx-hook="InfiniteScroll">
+  <div class="col text-center">
+    <%= if @displaying_rushes < @total_rushes_to_display do %>
+      <button class="btn btn-primary" type="button" disabled>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Loading...
+      </button>
+    <% end %>
+  </div>
+</div>
