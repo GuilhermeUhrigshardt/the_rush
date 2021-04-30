@@ -5,6 +5,7 @@ defmodule TheRush.Stats.Rush do
 
   use Ecto.Schema
   import Ecto.Changeset
+  alias TheRush.CsvBuilder
 
   @primary_key {:id, :id, autogenerate: true}
 
@@ -61,6 +62,10 @@ defmodule TheRush.Stats.Rush do
     |> Map.put_new(:twenty_plus_yards, to_integer(Map.fetch!(attrs, "20+")))
     |> Map.put_new(:forty_plus_yards, to_integer(Map.fetch!(attrs, "40+")))
     |> Map.put_new(:fumbles, to_integer(Map.fetch!(attrs, "FUM")))
+  end
+
+  def csv_header do
+    [:player, :team, :position, :attempts, :attempts_per_game, :yards_total, :yards_average, :yards_per_game, :touchdowns, :longest, :was_longest_touchdown, :first_downs, :first_downs_percentage, :twenty_plus_yards, :forty_plus_yards, :fumbles]
   end
 
   # Converts the given value to float (can contain commas)
