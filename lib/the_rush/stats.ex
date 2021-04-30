@@ -29,33 +29,29 @@ defmodule TheRush.Stats do
       iex> TheRush.Stats.list_rushes([player: "Tony Romo", page_options: %{page: 1, per_page: 50}, sort: %{sort_by: :player, sort_order: :asc}])
       [%Rush{}, ...]
   """
-  def list_rushes(criteria) do
-    {:ok, player_name} = Keyword.fetch(criteria, :player)
-    player_name =
-      "%#{player_name
-      |> String.replace("%", "")
-      |> String.replace("_", "")
-      }%"
+  def list_rushes([player: player_name, page_options: %{page: page, per_page: per_page}, sort: %{sort_by: sort_by, sort_order: sort_order}]) do
+    wild_card_player_name = get_wild_card_player_name(player_name)
 
-    query = from(r in Rush)
+    from(
+      r in Rush,
+      where: ilike(r.player, ^wild_card_player_name),
+      offset: ^((page - 1) * per_page),
+      limit: ^per_page,
+      order_by: [{^sort_order, ^sort_by}]
+    )
+    |> Repo.all
+  end
 
-    Enum.reduce(criteria, query, fn
-      {:player, ""}, query ->
-        query
+  def list_rushes(%{"options" => %{"player" => player_name, "sort_by" => sort_by, "sort_order" => sort_order}}) do
+    wild_card_player_name = get_wild_card_player_name(player_name)
+    sort_order = String.to_atom(sort_order)
+    sort_by = String.to_atom(sort_by)
 
-      {:player, _player}, query ->
-        from r in query,
-        where: ilike(r.player, ^player_name)
-
-      {:page_options, %{page: page, per_page: per_page}}, query ->
-        from r in query,
-          offset: ^((page - 1) * per_page),
-          limit: ^per_page
-
-      {:sort, %{sort_by: sort_by, sort_order: sort_order}}, query ->
-        from r in query,
-        order_by: [{^sort_order, ^sort_by}]
-    end)
+    from(
+      r in Rush,
+      where: ilike(r.player, ^wild_card_player_name),
+      order_by: [{^sort_order, ^sort_by}]
+    )
     |> Repo.all
   end
 
@@ -223,5 +219,14 @@ defmodule TheRush.Stats do
   """
   def change_rush(%Rush{} = rush, attrs \\ %{}) do
     Rush.changeset(rush, attrs)
+  end
+
+  # Always setting wild card to players names to avoid SQL injection
+  defp get_wild_card_player_name(player_name) do
+    "%#{
+      player_name
+      |> String.replace("%", "")
+      |> String.replace("_", "")
+    }%"
   end
 end

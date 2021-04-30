@@ -106,7 +106,8 @@ defmodule TheRushWeb.RushLive.Index do
         player: options.player,
         sort_by: sort_by,
         sort_order: toggle_sort_order(options.sort_order)
-      )
+      ),
+      class: "link-light"
   end
 
   defp toggle_sort_order(:asc), do: :desc

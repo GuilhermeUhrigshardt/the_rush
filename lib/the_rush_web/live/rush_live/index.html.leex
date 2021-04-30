@@ -14,7 +14,7 @@
     <div class="col-sm">
       <form phx-submit="player-search" phx-change="player-name">
         <div class="input-group mb-3">
-          <div class="col-xs-4">
+          <div class="col-xs-4 px-2">
             <input type="text" class="form-control" name="player" value="<%= @options.player %>"
               placeholder="Player name"
               autofocus autocomplete="off"
@@ -31,6 +31,12 @@
     </div>
     <div class="col-sm">
       <div class="float-right">
+        <%= link(
+          "Download CSV",
+          to: Routes.rush_path(@socket, :index, options: @options),
+          method: :get,
+          target: "none",
+          class: "btn btn-primary") %>
       </div>
     </div>
   </div>
@@ -41,60 +47,56 @@
     <option value="<%= match %>"><%= match %></option>
   <% end %>
 </datalist>
-
-<div class="col s12 m8 offset-m1 xl7 offset-xl1">
-  <table class="striped responsive-table">
-    <thead class="blue-text text-darken-2">
-      <tr>
-        <th>Player</th>
-        <th>Team</th>
-        <th>Position</th>
-        <th>Attempts</th>
-        <th>Attempts per game</th>
-        <th>
-          <%= sort_action(@socket, "Total yards", :yards_total, @options) %>
-        </th>
-        <th>Yards average</th>
-        <th>Yards per game</th>
-        <th>
-          <%= sort_action(@socket, "Total rushing touchdowns", :touchdowns, @options) %>
-        </th>
-        <th>
-          <%= sort_action(@socket, "Longest rush", :longest, @options) %>
-        </th>
-        <th>Was longest touchdown</th>
-        <th>First downs</th>
-        <th>First downs percentage</th>
-        <th>Twenty plus yards</th>
-        <th>Forty plus yards</th>
-        <th>Fumbles</th>
-        <th></th>
+<table class="table table-striped table-hover">
+  <thead class="bg-primary text-light align-middle text-center">
+    <tr>
+      <th>Player</th>
+      <th>Team</th>
+      <th>Position</th>
+      <th>Attempts</th>
+      <th>Attempts per game</th>
+      <th>
+        <%= sort_action(@socket, "Total yards", :yards_total, @options) %>
+      </th>
+      <th>Yards average</th>
+      <th>Yards per game</th>
+      <th>
+        <%= sort_action(@socket, "Total rushing touchdowns", :touchdowns, @options) %>
+      </th>
+      <th>
+        <%= sort_action(@socket, "Longest rush", :longest, @options) %>
+      </th>
+      <th>Was longest touchdown</th>
+      <th>First downs</th>
+      <th>First downs percentage</th>
+      <th>Twenty plus yards</th>
+      <th>Forty plus yards</th>
+      <th>Fumbles</th>
+    </tr>
+  </thead>
+  <tbody id="rushes" phx-update="<%= if @page_options.page == 1 do "replace" else "append" end %>">
+    <%= for rush <- @rushes do %>
+      <tr id="rush-<%= rush.id %>">
+        <td class="align-middle text-center"><%= rush.player %></td>
+        <td class="align-middle text-center"><%= rush.team %></td>
+        <td class="align-middle text-center"><%= rush.position %></td>
+        <td class="align-middle text-center"><%= rush.attempts %></td>
+        <td class="align-middle text-center"><%= rush.attempts_per_game %></td>
+        <td class="align-middle text-center"><%= rush.yards_total %></td>
+        <td class="align-middle text-center"><%= rush.yards_average %></td>
+        <td class="align-middle text-center"><%= rush.yards_per_game %></td>
+        <td class="align-middle text-center"><%= rush.touchdowns %></td>
+        <td class="align-middle text-center"><%= rush.longest %></td>
+        <td class="align-middle text-center"><%= if rush.was_longest_touchdown do "Yes" else "No" end %></td>
+        <td class="align-middle text-center"><%= rush.first_downs %></td>
+        <td class="align-middle text-center"><%= rush.first_downs_percentage %></td>
+        <td class="align-middle text-center"><%= rush.twenty_plus_yards %></td>
+        <td class="align-middle text-center"><%= rush.forty_plus_yards %></td>
+        <td class="align-middle text-center"><%= rush.fumbles %></td>
       </tr>
-    </thead>
-    <tbody id="rushes" phx-update="<%= if @page_options.page == 1 do "replace" else "append" end %>">
-      <%= for rush <- @rushes do %>
-        <tr id="rush-<%= rush.id %>">
-          <td><%= rush.player %></td>
-          <td><%= rush.team %></td>
-          <td><%= rush.position %></td>
-          <td><%= rush.attempts %></td>
-          <td><%= rush.attempts_per_game %></td>
-          <td><%= rush.yards_total %></td>
-          <td><%= rush.yards_average %></td>
-          <td><%= rush.yards_per_game %></td>
-          <td><%= rush.touchdowns %></td>
-          <td><%= rush.longest %></td>
-          <td><%= if rush.was_longest_touchdown do "Yes" else "No" end %></td>
-          <td><%= rush.first_downs %></td>
-          <td><%= rush.first_downs_percentage %></td>
-          <td><%= rush.twenty_plus_yards %></td>
-          <td><%= rush.forty_plus_yards %></td>
-          <td><%= rush.fumbles %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-</div>
+    <% end %>
+  </tbody>
+</table>
 <div id="footer" phx-hook="InfiniteScroll">
   <div class="col text-center">
     <%= if @displaying_rushes < @total_rushes_to_display do %>
