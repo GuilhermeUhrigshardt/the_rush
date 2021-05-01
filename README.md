@@ -8,7 +8,7 @@ The application was developed using:
 * PostgreSQL 12.6
 * npm 6.14.4
 
-## Starting the application
+## Installation and running this solution
 
 #### After cloning this repo, follow the steps below to get the application running:
 
