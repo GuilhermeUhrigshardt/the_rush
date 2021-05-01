@@ -10,6 +10,8 @@ The application was developed using:
 
 ## Starting the application
 
+#### After cloning this repo, follow the steps below to get the application running:
+
 The database is configured to use PostgreSQL's default username, password (both 'postgres'), database and hostname. If you wish to use other values, they can be changed at lines 5 - 8 of [`config/dev.exs`](/config/dev.exs).
 
 Before creating the database, you may include additional JSON files to [`priv/repo/seeds`](priv/repo/seeds) folder. The [`rushing.json`](priv/repo/seeds/rushing.json) file is already there, but if you want to load more data, feel free to include other files (it must contain the same structure).
