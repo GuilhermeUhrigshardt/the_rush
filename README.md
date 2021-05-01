@@ -16,7 +16,12 @@ The database is configured to use PostgreSQL's default username, password (both 
 
 Before creating the database, you may include additional JSON files to [`priv/repo/seeds`](priv/repo/seeds) folder. The [`rushing.json`](priv/repo/seeds/rushing.json) file is already there, but if you want to load more data, feel free to include other files (it must contain the same structure).
 
-After this is done, navigate to the project's root directory and run the following commands:
+In the command line, navigate to the_rush/assets and run the below command:
+```shell
+npm install
+```
+
+After this is done, go back to the project's root directory and run the following commands:
 ```shell
 mix deps.get # fetch required dependencies
 mix ecto.setup # create the database, run the migrations and feed it
