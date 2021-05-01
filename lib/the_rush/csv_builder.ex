@@ -20,7 +20,6 @@ defmodule TheRush.CsvBuilder do
 
   # Returns a single row based on a given `rush`, using `headers` to extract values
   defp get_row(rush, header) do
-    row =
       header
       |> Enum.map(&Map.get(rush, &1))
       |> Enum.map(&to_binary(&1))

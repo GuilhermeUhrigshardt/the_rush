@@ -5,7 +5,6 @@ defmodule TheRush.Stats.Rush do
 
   use Ecto.Schema
   import Ecto.Changeset
-  alias TheRush.CsvBuilder
 
   @primary_key {:id, :id, autogenerate: true}
 
