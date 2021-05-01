@@ -4,6 +4,7 @@ defmodule TheRushWeb.RushController do
   alias TheRush.CsvBuilder
 
   # `params` %{"options" => %{"player" => "", "sort_by" => "player", "sort_order" => "asc"}}
+  # Returns the CSV file given the `params`
   def index(conn, params) do
     rushes =
       Stats.list_rushes(params)
