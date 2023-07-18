@@ -1,6 +1,6 @@
 # theRush
 
-Web application built with Elixir, Phoenix, LiveView and PostgreSQL to be used as part of the selective process for the Elixir Developer role at theScore.
+Web application built with Elixir, Phoenix, LiveView and PostgreSQL to display NFL players stats.
 
 ## Requirements
 The application was developed using:
